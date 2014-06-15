@@ -1,0 +1,70 @@
+/* main */
+*{
+	font-family:Verdana, Geneva, sans-serif;
+}
+html, body{
+	padding:0; margin:0; background: #edeff1;
+}
+#wrapper{
+	min-width: 1000px;
+}
+
+.nova-marcacao, .move-item{
+	padding: 5px; border-radius:3px; border-bottom: 2px solid #505893; background: #6072ad; color: #FFF; text-align: center; position: absolute;; top: 20px; left: 20px; font-size: 11px; text-decoration: none;
+}
+.move-item{
+	top:50px;
+}
+.nova-marcacao.active{
+	opacity: 0.4;
+}
+#wrapper #imgArea{
+	margin-top: -600px;
+}
+#imgArea{
+	width:600px; height:450px; display:block; margin:15px auto; background:url(../img/penguins.jpg) center no-repeat; background-size: 100%; border-radius:10px; box-shadow:2px 2px 5px #CCC;
+}
+#imgArea img{
+	max-width: 600px;
+}
+#imgArea.active:hover{
+	cursor:crosshair;
+}
+.square {
+	border:1px solid #FF0000; position:absolute; background:#900; opacity:0.3; filter:alpha(opacity=30); -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; min-width:30px; min-height:30px;
+}
+.square span{
+	-webkit-transform:scale(0);
+}
+.square:hover span {
+	-webkit-transform:scale(1);
+}
+.square.fixed{
+	background:url(../img/bg_square.png); border-color:#757575; opacity:1;
+}
+.square .delete, .square .opt{
+	width:10px; height: 10px; text-align:center; background:#900; color:#FFF; position:absolute; top:2px; right:2px; font-size: 9px; line-height: 7px;
+}
+.square .opt{
+	left:-35px; top:-1px; background:#333; color:#FFF; text-align:center; width:34px; height:12px; font-size:9px; line-height:10px;
+}
+.square .resize{
+	width:10px; height:10px; position:absolute; bottom:1px; right:1px; background:url(../img/resize.png);
+}
+.square .delete:hover, .square .opt:hover{
+	cursor: pointer;
+}
+.square:hover{
+	cursor:move;
+}
+.overlay{
+	position:absolute; width: 100%; height: 100%; background: #CCC; opacity: 0.40; z-index: 2; top: 0; left: 0;
+}
+.opacity{
+	opacity:0.5;
+}
+
+/* transitions */
+.nova-marcacao{
+	-webkit-transition:0.3s all ease; -moz-transition:0.3s all ease; -o-transition:0.3s all ease;
+}
