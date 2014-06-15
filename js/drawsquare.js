@@ -4,44 +4,41 @@ var div,
 	posy,
 	initx = false,
 	inity = false,
-	bloq = false,
-	imagem = $("#imgArea");
-
+	blocked = false;
 // Obj
 var DS ={
 	init : function(){
-		
-		imagem = $("#imgArea");
+		imageArea = $("#imgArea");
 
-		// Eventos
-		$("#btnNovaMarcacao").bind("click", DS.ativaAreaMarcacao);
-		DS.dragProduto();
+		// Events
+		$("#btnNewMarkup").bind("click", DS.activeAreaMarking);
+		DS.dragMarkup();
 	},
 
 	/**
-	 * Pega coordenadas do mouse para construir as marcações
+	 * Get mouse coordinates to build markings 
 	 */
 	getMouse : function(e){
 		obj = $(this)
 		e = window.event || e;
 		//e = event;
 
-		// Define posições iniciais
+		// Define initial positions
 		posx = 0;
 		posy = 0;
 		
-		// Declara variavel para o evento (tratamento para versões antigas do FF e IE)
+		// Declare variable for the event (treatment for older versions of FF and IE)
 		var ev = (!e) ? window.event : e;
 		
 		// Ev FF
 		if (ev.pageX){ 
-			// Retorna posição do ponteiro
+			// Returns position of the pointer
 			posx=ev.pageX+window.pageXOffset; 
 			posy=ev.pageY+window.pageYOffset; 
 		}
 		// Ev IE
 		else if(ev.clientX){
-			// Retorna posição do ponteiro
+			// Returns position of the pointer
 			posx=ev.clientX+document.body.scrollLeft; 
 			posy=ev.clientY+document.body.scrollTop; 
 		} 
@@ -49,27 +46,27 @@ var DS ={
 			return false
 		}
 		
-		// Função a ser dispara no clique do mouse
+		// Method activated on mouse click
 		this.onmousedown = function(){
-			if(bloq == false){
-				// Atribui posições do inicio de acordo quando o evento foi disparado
+			if(blocked == false){
+				// Assigns positions from the beginning when the event was triggered
 				initx = posx;
 				inity = posy;
 				
-				// Verifica qual o último indice adicionado para montar a próxima marcação
+				// Checks the last index added to mount the next markup
 				var lastChild = $("div.square").last();
 				var lastIndex;
 
 				if (lastChild.html() != undefined) {
-					lastIndex = parseInt(lastChild.attr("index")); // pega a classe para verificação da útima posição
+					lastIndex = parseInt(lastChild.attr("index")); // Take the class for verification of last position
 					lastIndex = lastIndex+1;
 				}else{
 					lastIndex = 1;
 				}
 
-				// Cria o elemeto a ser adicionado
+				// Creates the element to be added
 				div = $(document.createElement('div')); 
-				div.addClass("square");		//classe
+				div.addClass("square");		//class
 				div.attr({
 					"index" : lastIndex,
 					"top"	: inity,
@@ -78,48 +75,48 @@ var DS ={
 					"left"	: initx+'px',
 					"top"	: inity+'px'
 				});
-				imagem.append(div);	// joga a div criada dentro da imagem
-				DS.dragProduto();
+				imageArea.append(div);	// Inserts the DIV created within the image
+				DS.dragMarkup();
 				
 			}
 			
 		} 
-		// Função a ser disparada ao soltar o botão do mouse
+		// Method to be triggered when you release the mouse button
 		this.onmouseup=function(){
-			if(bloq == false){
+			if(blocked == false){
 				// Vars
-				var btnNovaMarcacao = $("#btnNovaMarcacao");
+				var btnNewMarkup = $("#btnNewMarkup");
 
-				// Reseta variaveis
+				// Reset vars
 				initx = false;
 				inity = false;
 				
-				// 'callback' após o elemento sera dicionado
+				// 'callback' after the element will be inserted
 				div.addClass("fixed");
-				div.html("<span class='opt link' title='Inserir link'>Link</span><span class='delete' title='Remover esta marcação'>x</span><span class='resize' title='Segure e arraste para redimensionar'></span>");
+				div.html("<span class='opt link' title='Insert link'>Link</span><span class='delete' title='Remove this markup'>x</span><span class='resize' title='Hold and drag to resize'></span>");
 				$(".delete").unbind("click");
-				$(".delete").bind("click", DS.removeMarcacao);
+				$(".delete").bind("click", DS.removeMarkup);
 				$(".opt.link").bind("click", DS.insertLink);
 				$(".square").resizable();
 
 
-				// Habilita novamente o botão de nova marcação
-				btnNovaMarcacao.unbind("click");
-				btnNovaMarcacao.bind("click", DS.ativaAreaMarcacao);;
-				btnNovaMarcacao.removeClass("active").text("Nova marcação");
+				// Re-enables the new button markup
+				btnNewMarkup.unbind("click");
+				btnNewMarkup.bind("click", DS.activeAreaMarking);;
+				btnNewMarkup.removeClass("active").text("New markup");
 
-				// Remove evento da imagem e bloqueia criação de novas divs
-				imagem.onmousemove = null;
-				imagem.className = "";
-				bloq = true;
+				// Removes the event image and block creation of new DIVs
+				imageArea.onmousemove = null;
+				imageArea.className = "";
+				blocked = true;
 				return false;
 			}
 		}
-		// Estiliza a div criada
+		// Inserts the formatting in the new DIV
 		if(initx){
 			div.css({
-				"width"	: Math.abs(posx-initx)+'px', // Previne numero negativo
-				"height": Math.abs(posy-inity)+'px', // Previne numero negativo
+				"width"	: Math.abs(posx-initx)+'px', // Prevents negative number
+				"height": Math.abs(posy-inity)+'px', // Prevents negative number
 				"left"	: posx-initx<0?posx+'px':initx+'px',
 				"top"	: posy-inity<0?posy+'px':inity+'px'
 			});
@@ -127,56 +124,48 @@ var DS ={
 	},
 
 	/**
-	 * Ativa área de marcação
+	 * Activates the markup area
 	 */
-	ativaAreaMarcacao : function(){
-		var imagem = $("#imgArea");
+	activeAreaMarking : function(){
+		var image = $("#imgArea");
 
-		// Muda texto
-		$(this).text("Aguardando marcação...");
+		// Change text
+		$(this).text("Awaiting marking...");
 		$(this).addClass("active");
 
-		// Previne novo clique
+		// Prevent new click
 		$(this).unbind("click");
 		$(this).bind("click", function(){
-			alert("Por favor, termine a marcação atual antes de criar outra");
+			alert("Please finish the current markup before creating another");
 			return false;
 		});
 		$("#imgArea").mousemove(DS.getMouse);
-		imagem.addClass("active");
-		bloq = false;
+		image.addClass("active");
+		blocked = false;
 
 		$("#imgArea").animate({
-			"margin" : "15px auto"
+			"margin" : "15px auto",
+			"opacity" : "1"
 		});
-	},
-	
-	/**
-	 * Desativa marcação da área para poder mover os elementos com dragdrop
-	 */
-	desativaAreaMarcacao : function(){
-		$("#imgArea").mousemove(function(){});
-		$("#imgArea").removeEventListener;
-		alert("Desativou!");
 	},
 
 	/**
-	 * Remove marcação
+	 * Remove markup
 	 */
-	removeMarcacao : function(){
-		var confirm = window.confirm("Tem certeza que deseja exlcuir esta marcação?");
+	removeMarkup : function(){
+		var confirm = window.confirm("Are you sure you want to delete?");
 		if (confirm) {
-			marcacao = $(this).parent();
-			$(marcacao).remove();
+			markup = $(this).parent();
+			$(markup).remove();
 		}
 	},
 	
 	/**
 	 * Drag element
 	 */
-	dragProduto : function(){
+	dragMarkup : function(){
 		
-		// Inicio da função draggable
+		// Beginning of the draggable function
 		$(".square").draggable({
 			scroll : false,
 			start: function(){
@@ -202,19 +191,19 @@ var DS ={
 	},
 	
 	/**
-	 * Insere link 
+	 * Insert link on the markup
 	 */
 	insertLink : function(){
 		var link,
-			linkAtual = $(this).parent().attr("link");
+			currentLink = $(this).parent().attr("link");
 		
-		if(linkAtual != undefined){
-			link = window.prompt("Digite o link",linkAtual);
+		if(currentLink != undefined){
+			link = window.prompt("Enter the link",currentLink);
 		}else{
-			link = window.prompt("Digite o link","http://");
+			link = window.prompt("Enter the link","http://");
 		}
 		
-		// Caso o usuário tenha digitado link correto, atribui ao elemento pai
+		// If the user has entered correct link, attaches to the parent element
 		if(link != null){
 			$(this).parent().attr("link",link);
 		}
